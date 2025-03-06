@@ -1,66 +1,45 @@
 #include <iostream>
-#include <limits>
-#include <cmath>
+#include <limits> // Для перевірки правильності введених даних
+#include <map>    // Для збереження назв операцій та їх пріоритету
 
 using namespace std;
 
-// Функція для отримання коректного введення цілого числа > 0
-int getValidatedPositiveInt(const string& prompt) {
-    int number;
+// Функція для отримання коректного символу операції
+char getValidatedOperator() {
+    char op;
     while (true) {
-        cout << prompt;
-        cin >> number;
-        
-        if (cin.fail() || number <= 0) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Помилка: введено некоректне значення. Введіть ціле число більше за 0." << endl;
-        } else {
-            return number;
-        }
-    }
-}
+        cout << "Введіть позначення операції (+, -, *, /, ^): ";
+        cin >> op;
 
-// Функція для отримання коректного введення дійсного числа > 0
-double getValidatedPositiveDouble(const string& prompt) {
-    double number;
-    while (true) {
-        cout << prompt;
-        cin >> number;
-        
-        if (cin.fail() || number <= 0) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Помилка: введено некоректне значення. Введіть дійсне число більше за 0." << endl;
+        // Перевіряємо, чи введений символ є допустимим оператором
+        if (op == '+'  op == '-'  op == '*'  op == '/'  op == '^') {
+            return op;
         } else {
-            return number;
+            cout << "Помилка! Введіть коректний оператор (+, -, *, /, ^).\n";
+            cin.clear();  // Очистити флаг помилки
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Очистити вхідний буфер
         }
     }
-}
-
-// Функція для обчислення суми ряду
-double calculateSum(int N, double epsilon) {
-    double sum = 0.0;
-    for (int i = 1; i <= N; ++i) {
-        double term = 1.0 / (i * i);
-        if (term < epsilon) {
-            break;
-        }
-        sum += term;
-    }
-    return sum;
 }
 
 int main() {
-    // Запускаємо програму для трьох наборів даних
-    for (int i = 0; i < 3; ++i) {
-        int N = getValidatedPositiveInt("Введіть ціле число N (> 0): ");
-        double epsilon = getValidatedPositiveDouble("Введіть дійсне число ε (> 0): ");
-        
-        double result = calculateSum(N, epsilon);
-        cout << "Наближене значення суми ряду: " << result << endl;
-        cout << "-----------------------------" << endl;
-    }
-    
+    // Створюємо мапу для відповідності операторів їхнім назвам та пріоритетам
+    map<char, pair<string, int>> operators = {
+        {'+', {"Додавання", 1}},
+        {'-', {"Віднімання", 1}},
+        {'*', {"Множення", 2}},
+        {'/', {"Ділення", 2}},
+        {'^', {"Піднесення до степеня", 3}}
+    };
+
+    cout << "Програма визначення назви операції та її пріоритету.\n";
+
+    // Отримуємо від користувача операцію
+    char operation = getValidatedOperator();
+
+    // Виводимо назву операції та її пріоритет
+    cout << "Назва операції: " << operators[operation].first << endl;
+    cout << "Пріоритет операції: " << operators[operation].second << endl;
+
     return 0;
 }
